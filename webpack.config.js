@@ -1,4 +1,5 @@
 const path = require('path');
+
 module.exports = {
   mode: 'development',
   entry: path.join(__dirname, 'game', 'index'),
@@ -6,32 +7,32 @@ module.exports = {
   output: {
     path: path.join(__dirname, 'dist'),
     publicPath: '/dist/',
-    filename: "bundle.js",
-    chunkFilename: '[name].js'
+    filename: 'bundle.js',
+    chunkFilename: '[name].js',
   },
   module: {
     rules: [{
       test: /.jsx?$/,
       include: [
-        path.resolve(__dirname, 'game')
+        path.resolve(__dirname, 'game'),
       ],
       exclude: [
-        path.resolve(__dirname, 'node_modules')
+        path.resolve(__dirname, 'node_modules'),
       ],
       loader: 'babel-loader',
       query: {
         presets: [
-          ["@babel/env", {
-            "targets": {
-              "browsers": "last 2 chrome versions"
-            }
-          }]
-        ]
-      }
-    }]
+          ['@babel/env', {
+            targets: {
+              browsers: 'last 2 chrome versions',
+            },
+          }],
+        ],
+      },
+    }],
   },
   resolve: {
-    extensions: ['.json', '.js', '.jsx']
+    extensions: ['.json', '.js', '.jsx'],
   },
   devtool: 'source-map',
 };
