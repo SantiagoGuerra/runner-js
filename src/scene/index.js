@@ -3,6 +3,7 @@ import options from '../options';
 import dude from '../assets/dude.png';
 import block from '../assets/block.png';
 import run from '../assets/run.png';
+import apple from '../assets/apple.png';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -13,6 +14,10 @@ export default class Scene extends Phaser.Scene {
     this.load.image('dude', dude);
     this.load.image('block', block);
     this.load.spritesheet('run', run, {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet('apple', apple, {
       frameWidth: 32,
       frameHeight: 32,
     });
