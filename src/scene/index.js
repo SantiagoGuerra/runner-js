@@ -42,15 +42,20 @@ export default class Scene extends Phaser.Scene {
 
     this.anims.create({
       key: 'run',
-      frames: this.anims.generateFrameNumbers('player', {
+      frames: this.anims.generateFrameNumbers('run', {
         start: 0,
-        end: 1,
+        end: 11,
       }),
-      frameRate: 8,
+      frameRate: 32,
       repeat: -1,
     });
 
-    this.physics.add.collider(this.player, this.platformGroup);
+
+    this.physics.add.collider(this.player, this.platformGroup, () => {
+      if (!this.player.anims.isPlaying) {
+        this.player.anims.play('run');
+      }
+    }, null, this);
 
     this.input.on('pointerdown', this.jump, this);
   }
@@ -81,6 +86,8 @@ export default class Scene extends Phaser.Scene {
       }
       this.player.setVelocityY(options.jumpForce * -1);
       this.playerJumps += 1;
+
+      this.player.anims.stop();
     }
   }
 
