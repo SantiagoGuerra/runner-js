@@ -27,14 +27,13 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
-    this.load.image('background', background)
+    this.load.image('background', background);
   }
 
   create() {
-
     this.addedPlatforms = 0;
 
-    this.add.tileSprite(0, 0, 2400, 1200, 'background')
+    this.add.tileSprite(0, 0, 2400, 1200, 'background');
 
     this.platformGroup = this.add.group({
 
@@ -109,7 +108,7 @@ export default class Scene extends Phaser.Scene {
     }, null, this);
 
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
-      apple.anims.play('disappear')
+      apple.anims.play('disappear');
       this.tweens.add({
         targets: apple,
         y: apple.y,
@@ -122,13 +121,11 @@ export default class Scene extends Phaser.Scene {
           this.appleGroup.remove(apple);
         },
       });
-
     }, null, this);
 
 
     this.input.on('pointerdown', this.jump, this);
     this.input.keyboard.on('keydown-SPACE', this.jump, this);
-
   }
 
   addPlatform(platformWidth, posX, posY) {
@@ -170,7 +167,6 @@ export default class Scene extends Phaser.Scene {
           apple.setVelocityX(platform.body.velocity.x);
           apple.anims.play('elastic-apple');
           this.appleGroup.add(apple);
-
         }
       }
     }
