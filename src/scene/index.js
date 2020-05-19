@@ -6,6 +6,7 @@ import run from '../assets/run.png';
 import apple from '../assets/apple.png';
 import collected from '../assets/collected.png';
 import background from '../assets/background.png';
+import fire from '../assets/fire.png';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -25,6 +26,10 @@ export default class Scene extends Phaser.Scene {
     });
     this.load.spritesheet('collected', collected, {
       frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet('fire', fire, {
+      frameWidth: 16,
       frameHeight: 32,
     });
     this.load.image('background', background);
@@ -62,6 +67,24 @@ export default class Scene extends Phaser.Scene {
         apple.scene.appleGroup.add(apple);
       },
     });
+
+     // group with all active firecamps.
+     this.fireGroup = this.add.group({
+ 
+      // once a firecamp is removed, it's added to the pool
+      removeCallback: function(fire){
+          fire.scene.firePool.add(fire)
+      }
+  });
+
+  // fire pool
+  this.firePool = this.add.group({
+
+      // once a fire is removed from the pool, it's added to the active fire group
+      removeCallback: function(fire){
+          fire.scene.fireGroup.add(fire)
+      }
+  });
 
     this.playerJumps = 0;
 
