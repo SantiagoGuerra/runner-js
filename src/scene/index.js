@@ -76,6 +76,23 @@ export default class Scene extends Phaser.Scene {
       }
     }, null, this);
 
+    // setting collisions between the player and the apple group
+    this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
+      this.tweens.add({
+        targets: apple,
+        y: apple.y - 100,
+        alpha: 0,
+        duration: 800,
+        ease: 'Cubic.easeOut',
+        callbackScope: this,
+        onComplete() {
+          this.appleGroup.killAndHide(apple);
+          this.appleGroup.remove(apple);
+        },
+      });
+    }, null, this);
+
+
     this.input.on('pointerdown', this.jump, this);
   }
 
