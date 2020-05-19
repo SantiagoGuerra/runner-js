@@ -39,4 +39,22 @@ export default class Scene extends Phaser.Scene {
 
     this.input.on('pointerdown', this.jump, this);
   }
+
+  addPlatform(platformWidth, posX) {
+    let platform;
+    if (this.platformPool.getLength()) {
+      platform = this.platformPool.getFirst();
+      platform.x = posX;
+      platform.active = true;
+      platform.visible = true;
+      this.platformPool.remove(platform);
+    } else {
+      platform = this.physics.add.sprite(posX, this.sys.game.config.height * 0.8, 'block');
+      platform.setImmovable(true);
+      platform.setVelocityX(options.platformStartSpeed * -1);
+      this.platformGroup.add(platform);
+    }
+    platform.displayWidth = platformWidth;
+    this.nextPlatformDistance = Phaser.Math.Between(options.spawnRange[0], options.spawnRange[1]);
+  }
 }
