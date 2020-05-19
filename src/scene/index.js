@@ -40,6 +40,16 @@ export default class Scene extends Phaser.Scene {
     this.player = this.physics.add.sprite(options.playerStartPosition, this.sys.game.config.height / 2, 'dude');
     this.player.setGravityY(options.playerGravity);
 
+    this.anims.create({
+      key: 'run',
+      frames: this.anims.generateFrameNumbers('player', {
+        start: 0,
+        end: 1,
+      }),
+      frameRate: 8,
+      repeat: -1,
+    });
+
     this.physics.add.collider(this.player, this.platformGroup);
 
     this.input.on('pointerdown', this.jump, this);
