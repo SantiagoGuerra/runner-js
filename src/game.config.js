@@ -9,7 +9,7 @@ export const config = {
   backgroundColor: 0x444444,
   scene: {
     preload,
-    create
+    create,
   },
   physics: {
     default: 'arcade',
