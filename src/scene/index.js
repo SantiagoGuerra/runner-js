@@ -38,6 +38,20 @@ export default class Scene extends Phaser.Scene {
       },
     });
 
+    this.appleGroup = this.add.group({
+
+      removeCallback(apple) {
+        apple.scene.applePool.add(apple);
+      },
+    });
+
+    this.applePool = this.add.group({
+
+      removeCallback(apple) {
+        apple.scene.appleGroup.add(apple);
+      },
+    });
+
     this.playerJumps = 0;
 
     this.addPlatform(this.sys.game.config.width, this.sys.game.config.width / 2);
