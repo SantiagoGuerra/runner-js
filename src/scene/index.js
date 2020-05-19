@@ -57,4 +57,15 @@ export default class Scene extends Phaser.Scene {
     platform.displayWidth = platformWidth;
     this.nextPlatformDistance = Phaser.Math.Between(options.spawnRange[0], options.spawnRange[1]);
   }
+
+  jump() {
+    // eslint-disable-next-line max-len
+    if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < options.jumps)) {
+      if (this.player.body.touching.down) {
+        this.playerJumps = 0;
+      }
+      this.player.setVelocityY(options.jumpForce * -1);
+      this.playerJumps += 1;
+    }
+  }
 }
