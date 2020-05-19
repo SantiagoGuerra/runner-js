@@ -1,1 +1,3 @@
-export default function create() {}
+export default function create() {
+  this.add.image(800, 200, 'dude');
+}
