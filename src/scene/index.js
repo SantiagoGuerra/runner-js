@@ -76,7 +76,6 @@ export default class Scene extends Phaser.Scene {
       }
     }, null, this);
 
-    // setting collisions between the player and the apple group
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
       this.tweens.add({
         targets: apple,
@@ -96,22 +95,48 @@ export default class Scene extends Phaser.Scene {
     this.input.on('pointerdown', this.jump, this);
   }
 
-  addPlatform(platformWidth, posX) {
+  addPlatform(platformWidth, posX, posY) {
+    this.addedPlatforms += 1;
     let platform;
     if (this.platformPool.getLength()) {
       platform = this.platformPool.getFirst();
       platform.x = posX;
+      platform.y = posY;
       platform.active = true;
       platform.visible = true;
       this.platformPool.remove(platform);
+      const newRatio = platformWidth / platform.displayWidth;
+      platform.displayWidth = platformWidth;
+      platform.tileScaleX = 1 / platform.scaleX;
     } else {
-      platform = this.physics.add.sprite(posX, this.sys.game.config.height * 0.8, 'block');
-      platform.setImmovable(true);
-      platform.setVelocityX(options.platformStartSpeed * -1);
+      platform = this.add.tileSprite(posX, posY, platformWidth, 24, 'block');
+      this.physics.add.existing(platform);
+      platform.body.setImmovable(true);
+      platform.body.setVelocityX(Phaser.Math.Between(options.platformSpeedRange[0], options.platformSpeedRange[1]) * -1);
       this.platformGroup.add(platform);
     }
-    platform.displayWidth = platformWidth;
     this.nextPlatformDistance = Phaser.Math.Between(options.spawnRange[0], options.spawnRange[1]);
+
+    // is there a apple over the platform?
+    if (this.addedPlatforms > 1) {
+      if (Phaser.Math.Between(1, 100) <= options.applePercent) {
+        if (this.applePool.getLength()) {
+          const apple = this.applePool.getFirst();
+          apple.x = posX;
+          apple.y = posY - 96;
+          apple.alpha = 1;
+          apple.active = true;
+          apple.visible = true;
+          this.applePool.remove(apple);
+        } else {
+          const apple = this.physics.add.sprite(posX, posY - 96, 'apple');
+          apple.setImmovable(true);
+          apple.setVelocityX(platform.body.velocity.x);
+          apple.anims.play('rotate');
+          this.appleGroup.add(apple);
+        }
+      }
+    }
   }
 
   jump() {
