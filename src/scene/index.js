@@ -24,6 +24,9 @@ export default class Scene extends Phaser.Scene {
   }
 
   create() {
+
+    this.addedPlatforms = 0;
+
     this.platformGroup = this.add.group({
 
       removeCallback(platform) {
@@ -69,6 +72,16 @@ export default class Scene extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: 'elastic-apple',
+      frames: this.anims.generateFrameNumbers('apple', {
+        start: 0,
+        end: 16,
+      }),
+      frameRate: 32,
+      repeat: -1,
+    });
+
 
     this.physics.add.collider(this.player, this.platformGroup, () => {
       if (!this.player.anims.isPlaying) {
@@ -79,7 +92,7 @@ export default class Scene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
       this.tweens.add({
         targets: apple,
-        y: apple.y - 100,
+        y: apple.y,
         alpha: 0,
         duration: 800,
         ease: 'Cubic.easeOut',
@@ -117,7 +130,6 @@ export default class Scene extends Phaser.Scene {
     }
     this.nextPlatformDistance = Phaser.Math.Between(options.spawnRange[0], options.spawnRange[1]);
 
-    // is there a apple over the platform?
     if (this.addedPlatforms > 1) {
       if (Phaser.Math.Between(1, 100) <= options.applePercent) {
         if (this.applePool.getLength()) {
@@ -132,8 +144,9 @@ export default class Scene extends Phaser.Scene {
           const apple = this.physics.add.sprite(posX, posY - 96, 'apple');
           apple.setImmovable(true);
           apple.setVelocityX(platform.body.velocity.x);
-          apple.anims.play('rotate');
+          apple.anims.play('elastic-apple');
           this.appleGroup.add(apple);
+
         }
       }
     }
@@ -153,25 +166,44 @@ export default class Scene extends Phaser.Scene {
   }
 
   update() {
+    // game over
     if (this.player.y > this.sys.game.config.height) {
       this.scene.start('Scene');
     }
     this.player.x = options.playerStartPosition;
 
+    // recycling platforms
     let minDistance = this.sys.game.config.width;
-    this.platformGroup.getChildren().forEach(platform => {
+    let rightmostPlatformHeight = 0;
+    this.platformGroup.getChildren().forEach((platform) => {
       const platformDistance = this.sys.game.config.width - platform.x - platform.displayWidth / 2;
-      minDistance = Math.min(minDistance, platformDistance);
+      if (platformDistance < minDistance) {
+        minDistance = platformDistance;
+        rightmostPlatformHeight = platform.y;
+      }
       if (platform.x < -platform.displayWidth / 2) {
         this.platformGroup.killAndHide(platform);
         this.platformGroup.remove(platform);
       }
     }, this);
 
+    // recycling apples
+    this.appleGroup.getChildren().forEach(apple => {
+      if (apple.x < -apple.displayWidth / 2) {
+        this.appleGroup.killAndHide(apple);
+        this.appleGroup.remove(apple);
+      }
+    }, this);
+
+    // adding new platforms
     if (minDistance > this.nextPlatformDistance) {
-      // eslint-disable-next-line max-len
       const nextPlatformWidth = Phaser.Math.Between(options.platformSizeRange[0], options.platformSizeRange[1]);
-      this.addPlatform(nextPlatformWidth, this.sys.game.config.width + nextPlatformWidth / 2);
+      const platformRandomHeight = options.platformHeighScale * Phaser.Math.Between(options.platformHeightRange[0], options.platformHeightRange[1]);
+      const nextPlatformGap = rightmostPlatformHeight + platformRandomHeight;
+      const minPlatformHeight = this.sys.game.config.height * options.platformVerticalLimit[0];
+      const maxPlatformHeight = this.sys.game.config.height * options.platformVerticalLimit[1];
+      const nextPlatformHeight = Phaser.Math.Clamp(nextPlatformGap, minPlatformHeight, maxPlatformHeight);
+      this.addPlatform(nextPlatformWidth, this.sys.game.config.width + nextPlatformWidth / 2, nextPlatformHeight);
     }
   }
 }
