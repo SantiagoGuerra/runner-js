@@ -4,6 +4,7 @@ import dude from '../assets/dude.png';
 import block from '../assets/block.png';
 import run from '../assets/run.png';
 import apple from '../assets/apple.png';
+import collected from '../assets/collected.png';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -18,6 +19,10 @@ export default class Scene extends Phaser.Scene {
       frameHeight: 32,
     });
     this.load.spritesheet('apple', apple, {
+      frameWidth: 32,
+      frameHeight: 32,
+    });
+    this.load.spritesheet('collected', collected, {
       frameWidth: 32,
       frameHeight: 32,
     });
@@ -82,6 +87,16 @@ export default class Scene extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: 'disappear',
+      frames: this.anims.generateFrameNumbers('collected', {
+        start: 0,
+        end: 16,
+      }),
+      frameRate: 32,
+      repeat: -1,
+    });
+
 
     this.physics.add.collider(this.player, this.platformGroup, () => {
       if (!this.player.anims.isPlaying) {
@@ -90,6 +105,7 @@ export default class Scene extends Phaser.Scene {
     }, null, this);
 
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
+      apple.anims.play('disappear')
       this.tweens.add({
         targets: apple,
         y: apple.y,
@@ -102,6 +118,7 @@ export default class Scene extends Phaser.Scene {
           this.appleGroup.remove(apple);
         },
       });
+
     }, null, this);
 
 
@@ -134,6 +151,7 @@ export default class Scene extends Phaser.Scene {
       if (Phaser.Math.Between(1, 100) <= options.applePercent) {
         if (this.applePool.getLength()) {
           const apple = this.applePool.getFirst();
+          apple.anims.play('elastic-apple');
           apple.x = posX;
           apple.y = posY - 96;
           apple.alpha = 1;
