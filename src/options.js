@@ -31,7 +31,7 @@ const options = {
   jumps: 2,
 
   // % of probability a coin appears on the platform
-  applePercent: 100,
+  applePercent: 30,
 };
 
 export default options;

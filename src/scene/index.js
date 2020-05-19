@@ -5,6 +5,7 @@ import block from '../assets/block.png';
 import run from '../assets/run.png';
 import apple from '../assets/apple.png';
 import collected from '../assets/collected.png';
+import background from '../assets/background.png';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -26,11 +27,14 @@ export default class Scene extends Phaser.Scene {
       frameWidth: 32,
       frameHeight: 32,
     });
+    this.load.image('background', background)
   }
 
   create() {
 
     this.addedPlatforms = 0;
+
+    this.add.tileSprite(0, 0, 2400, 1200, 'background')
 
     this.platformGroup = this.add.group({
 
@@ -123,6 +127,8 @@ export default class Scene extends Phaser.Scene {
 
 
     this.input.on('pointerdown', this.jump, this);
+    this.input.keyboard.on('keydown-SPACE', this.jump, this);
+
   }
 
   addPlatform(platformWidth, posX, posY) {

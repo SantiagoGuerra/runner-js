@@ -3,8 +3,8 @@ import Scene from './scene/index';
 
 export const configGame = {
   type: Phaser.AUTO,
-  width: 1334,
-  height: 750,
+  width: 1200,
+  height: 600,
   backgroundColor: 0x444444,
   scene: Scene,
   physics: {
