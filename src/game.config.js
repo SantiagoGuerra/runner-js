@@ -1,20 +1,16 @@
 import Phaser from 'phaser';
-import preload from './scene/preload';
-import create from './scene/create';
+import Scene from './scene/index';
 
-export const config = {
+export const configGame = {
   type: Phaser.AUTO,
   width: 1334,
   height: 750,
   backgroundColor: 0x444444,
-  scene: {
-    preload,
-    create,
-  },
+  scene: Scene,
   physics: {
     default: 'arcade',
   },
 };
 
 
-export default config;
+export default configGame;
