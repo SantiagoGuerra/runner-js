@@ -38,6 +38,8 @@ export default class Scene extends Phaser.Scene {
   create() {
     this.addedPlatforms = 0;
 
+    this.dying = false;
+
     this.add.tileSprite(0, 0, 2400, 1200, 'background');
 
     this.platformGroup = this.add.group({
@@ -145,6 +147,16 @@ export default class Scene extends Phaser.Scene {
         },
       });
     }, null, this);
+
+    this.physics.add.overlap(this.player, this.fireGroup, () => {
+ 
+      this.dying = true;
+      this.player.anims.stop();
+      this.player.setFrame(2);
+      this.player.body.setVelocityY(-200);
+      this.physics.world.removeCollider(this.platformCollider);
+
+  }, null, this);
 
 
     this.input.on('pointerdown', this.jump, this);
