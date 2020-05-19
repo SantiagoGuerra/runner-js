@@ -68,4 +68,27 @@ export default class Scene extends Phaser.Scene {
       this.playerJumps += 1;
     }
   }
+
+  update() {
+    if (this.player.y > this.sys.game.config.height) {
+      this.scene.start('Scene');
+    }
+    this.player.x = options.playerStartPosition;
+
+    let minDistance = this.sys.game.config.width;
+    this.platformGroup.getChildren().forEach(platform => {
+      const platformDistance = this.sys.game.config.width - platform.x - platform.displayWidth / 2;
+      minDistance = Math.min(minDistance, platformDistance);
+      if (platform.x < -platform.displayWidth / 2) {
+        this.platformGroup.killAndHide(platform);
+        this.platformGroup.remove(platform);
+      }
+    }, this);
+
+    if (minDistance > this.nextPlatformDistance) {
+      // eslint-disable-next-line max-len
+      const nextPlatformWidth = Phaser.Math.Between(options.platformSizeRange[0], options.platformSizeRange[1]);
+      this.addPlatform(nextPlatformWidth, this.sys.game.config.width + nextPlatformWidth / 2);
+    }
+  }
 }
