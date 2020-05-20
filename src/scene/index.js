@@ -271,6 +271,7 @@ export default class Scene extends Phaser.Scene {
   }
 
   jump() {
+    // eslint-disable-next-line max-len
     if ((!this.dying) && (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < options.jumps))) {
       this.jumpEffect.play();
       if (this.player.body.touching.down) {

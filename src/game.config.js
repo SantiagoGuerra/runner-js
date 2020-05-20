@@ -5,6 +5,7 @@ export const configGame = {
   type: Phaser.AUTO,
   width: 1200,
   height: 600,
+  parent: 'root',
   backgroundColor: 0x444444,
   scene: Scene,
   physics: {
