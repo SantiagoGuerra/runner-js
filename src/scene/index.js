@@ -160,7 +160,7 @@ export default class Scene extends Phaser.Scene {
     this.physics.add.overlap(this.player, this.fireGroup, () => {
  
       this.dying = true;
-      this.player.anims.stop();
+      this.player.anims.play('player-disappear');
       this.player.setFrame(2);
       this.player.body.setVelocityY(-200);
       this.physics.world.removeCollider(this.platformCollider);
@@ -252,7 +252,7 @@ export default class Scene extends Phaser.Scene {
 
   update() {
     // game over
-    if (this.player.y > this.sys.game.config.height) {
+    if (this.player.y > this.sys.game.config.height || this.dying) {
       this.scene.start('Scene');
     }
     this.player.x = options.playerStartPosition;
