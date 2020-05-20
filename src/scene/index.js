@@ -124,6 +124,16 @@ export default class Scene extends Phaser.Scene {
       repeat: -1,
     });
 
+    this.anims.create({
+      key: 'burn',
+      frames: this.anims.generateFrameNumbers('fire', {
+        start: 0,
+        end: 2,
+      }),
+      frameRate: 32,
+      repeat: -1,
+    });
+
 
     this.physics.add.collider(this.player, this.platformGroup, () => {
       if (!this.player.anims.isPlaying) {
@@ -204,7 +214,7 @@ export default class Scene extends Phaser.Scene {
         }
       }
 
-      if(Phaser.Math.Between(1, 100) <= gameOptions.firePercent){
+      if(Phaser.Math.Between(1, 100) <= options.firePercent){
         if(this.firePool.getLength()){
             let fire = this.firePool.getFirst();
             fire.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth);
