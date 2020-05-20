@@ -1,5 +1,8 @@
 import Phaser from 'phaser';
 import options from '../options';
+import suckEffect from '../assets/suck-effect.wav';
+import jumpEffect from '../assets/jump-effect.wav';
+import musicBackground from '../assets/background-loop.wav';
 import dude from '../assets/dude.png';
 import block from '../assets/block.png';
 import run from '../assets/run.png';
@@ -37,11 +40,21 @@ export default class Scene extends Phaser.Scene {
     this.load.spritesheet('player-disappear', playerDisappear, {
       frameHeight: 96,
       frameWidth: 96,
-    })
+    });
+    this.load.audio('music-background', musicBackground);
+    this.load.audio('suck-effect', suckEffect);
+    this.load.audio('jump-effect', jumpEffect);
+
   }
 
   create() {
     this.addedPlatforms = 0;
+
+    this.music = this.sound.add('music-background');
+    this.suckEffect = this.sound.add('suck-effect');
+    this.jumpEffect = this.sound.add('jump-effect');
+
+    this.music.play()
 
     this.dying = false;
 
@@ -158,6 +171,7 @@ export default class Scene extends Phaser.Scene {
 
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
       apple.anims.play('disappear');
+      this.suckEffect.play()
       this.tweens.add({
         targets: apple,
         y: apple.y,
@@ -255,6 +269,7 @@ export default class Scene extends Phaser.Scene {
   jump() {
     // eslint-disable-next-line max-len
     if ((!this.dying) && (this.player.body.touching.down|| (this.playerJumps > 0 && this.playerJumps < options.jumps))) {
+      this.jumpEffect.play()
       if (this.player.body.touching.down) {
         this.playerJumps = 0;
       }
@@ -268,6 +283,7 @@ export default class Scene extends Phaser.Scene {
   update() {
     // game over
     if (this.player.y > this.sys.game.config.height) {
+      this.music.stop()
       this.scene.start('Scene');
     }
     this.player.x = options.playerStartPosition;
