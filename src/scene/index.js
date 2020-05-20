@@ -72,7 +72,6 @@ export default class Scene extends Phaser.Scene {
 
      // group with all active firecamps.
      this.fireGroup = this.add.group({
- 
       // once a firecamp is removed, it's added to the pool
       removeCallback: function(fire){
           fire.scene.firePool.add(fire)
@@ -204,6 +203,27 @@ export default class Scene extends Phaser.Scene {
           this.appleGroup.add(apple);
         }
       }
+
+      if(Phaser.Math.Between(1, 100) <= gameOptions.firePercent){
+        if(this.firePool.getLength()){
+            let fire = this.firePool.getFirst();
+            fire.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth);
+            fire.y = posY - 46;
+            fire.alpha = 1;
+            fire.active = true;
+            fire.visible = true;
+            this.firePool.remove(fire);
+        }
+        else{
+            let fire = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, "fire");
+            fire.setImmovable(true);
+            fire.setVelocityX(platform.body.velocity.x);
+            fire.setSize(8, 2, true)
+            fire.anims.play("burn");
+            fire.setDepth(2);
+            this.fireGroup.add(fire);
+        }
+    }
     }
   }
 
