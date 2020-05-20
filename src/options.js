@@ -31,7 +31,7 @@ const options = {
   jumps: 2,
 
   // % of probability a coin appears on the platform
-  applePercent: 50,
+  applePercent: 110,
 
   // % of probability a fire appears on the platform
   firePercent: 30,

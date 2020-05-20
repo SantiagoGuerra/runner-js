@@ -11,6 +11,8 @@ import collected from '../assets/collected.png';
 import background from '../assets/background.png';
 import fire from '../assets/fire.png';
 import playerDisappear from '../assets/player-disappear.png';
+import nokiaFont from '../assets/nokia.png';
+import nokiaFontXML from '../assets/nokia.xml';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -44,21 +46,26 @@ export default class Scene extends Phaser.Scene {
     this.load.audio('music-background', musicBackground);
     this.load.audio('suck-effect', suckEffect);
     this.load.audio('jump-effect', jumpEffect);
-
+    this.load.bitmapFont('nokia', nokiaFont, nokiaFontXML);
   }
 
   create() {
     this.addedPlatforms = 0;
 
     this.music = this.sound.add('music-background');
+
+    this.music.loop = true;
     this.suckEffect = this.sound.add('suck-effect');
     this.jumpEffect = this.sound.add('jump-effect');
 
-    this.music.play()
+    this.music.play();
 
     this.dying = false;
 
     this.add.tileSprite(0, 0, 2400, 1200, 'background');
+    this.points = 0;
+    this.score = this.add.bitmapText(64, 64, 'nokia');
+
 
     this.platformGroup = this.add.group({
 
@@ -88,22 +95,24 @@ export default class Scene extends Phaser.Scene {
       },
     });
 
-     // group with all active firecamps.
-     this.fireGroup = this.add.group({
+    // group with all active firecamps.
+    this.fireGroup = this.add.group({
       // once a firecamp is removed, it's added to the pool
-      removeCallback: function(fire){
-          fire.scene.firePool.add(fire)
-      }
-  });
+      removeCallback(fire) {
+        this.points += 1
 
-  // fire pool
-  this.firePool = this.add.group({
+        fire.scene.firePool.add(fire);
+      },
+    });
+
+    // fire pool
+    this.firePool = this.add.group({
 
       // once a fire is removed from the pool, it's added to the active fire group
-      removeCallback: function(fire){
-          fire.scene.fireGroup.add(fire)
-      }
-  });
+      removeCallback(fire) {
+        fire.scene.fireGroup.add(fire);
+      },
+    });
 
     this.playerJumps = 0;
 
@@ -170,8 +179,11 @@ export default class Scene extends Phaser.Scene {
     }, null, this);
 
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
+     
+      this.points += 1
+      apple.disableBody(false, false);
+      this.suckEffect.play();
       apple.anims.play('disappear');
-      this.suckEffect.play()
       this.tweens.add({
         targets: apple,
         y: apple.y,
@@ -187,14 +199,12 @@ export default class Scene extends Phaser.Scene {
     }, null, this);
 
     this.physics.add.overlap(this.player, this.fireGroup, () => {
- 
       this.dying = true;
       this.player.anims.play('player-disappear');
       this.player.setFrame(2);
       this.player.body.setVelocityY(-200);
       this.physics.world.removeCollider(this.platformCollider);
-
-  }, null, this);
+    }, null, this);
 
 
     this.input.on('pointerdown', this.jump, this);
@@ -243,33 +253,32 @@ export default class Scene extends Phaser.Scene {
         }
       }
 
-      if(Phaser.Math.Between(1, 100) <= options.firePercent){
-        if(this.firePool.getLength()){
-            let fire = this.firePool.getFirst();
-            fire.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth);
-            fire.y = posY - 46;
-            fire.alpha = 1;
-            fire.active = true;
-            fire.visible = true;
-            this.firePool.remove(fire);
+      if (Phaser.Math.Between(1, 100) <= options.firePercent) {
+        if (this.firePool.getLength()) {
+          const fire = this.firePool.getFirst();
+          fire.x = posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth);
+          fire.y = posY - 46;
+          fire.alpha = 1;
+          fire.active = true;
+          fire.visible = true;
+          this.firePool.remove(fire);
+        } else {
+          const fire = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, 'fire');
+          fire.setImmovable(true);
+          fire.setVelocityX(platform.body.velocity.x);
+          fire.setSize(8, 2, true);
+          fire.anims.play('burn');
+          fire.setDepth(2);
+          this.fireGroup.add(fire);
         }
-        else{
-            let fire = this.physics.add.sprite(posX - platformWidth / 2 + Phaser.Math.Between(1, platformWidth), posY - 46, "fire");
-            fire.setImmovable(true);
-            fire.setVelocityX(platform.body.velocity.x);
-            fire.setSize(8, 2, true)
-            fire.anims.play("burn");
-            fire.setDepth(2);
-            this.fireGroup.add(fire);
-        }
-    }
+      }
     }
   }
 
   jump() {
     // eslint-disable-next-line max-len
-    if ((!this.dying) && (this.player.body.touching.down|| (this.playerJumps > 0 && this.playerJumps < options.jumps))) {
-      this.jumpEffect.play()
+    if ((!this.dying) && (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < options.jumps))) {
+      this.jumpEffect.play();
       if (this.player.body.touching.down) {
         this.playerJumps = 0;
       }
@@ -281,10 +290,12 @@ export default class Scene extends Phaser.Scene {
   }
 
   update() {
+    this.score.text = 'Your Apples: ' + this.points;
     // game over
     if (this.player.y > this.sys.game.config.height) {
-      this.music.stop()
+      this.music.stop();
       this.scene.start('Scene');
+      this.points = 0;
     }
     this.player.x = options.playerStartPosition;
 
@@ -311,12 +322,12 @@ export default class Scene extends Phaser.Scene {
       }
     }, this);
 
-    this.fireGroup.getChildren().forEach(function(fire){
-      if(fire.x < - fire.displayWidth / 2){
-          this.fireGroup.killAndHide(fire);
-          this.fireGroup.remove(fire);
+    this.fireGroup.getChildren().forEach(function (fire) {
+      if (fire.x < -fire.displayWidth / 2) {
+        this.fireGroup.killAndHide(fire);
+        this.fireGroup.remove(fire);
       }
-  }, this);
+    }, this);
 
 
     // adding new platforms
