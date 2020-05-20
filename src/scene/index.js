@@ -7,6 +7,7 @@ import apple from '../assets/apple.png';
 import collected from '../assets/collected.png';
 import background from '../assets/background.png';
 import fire from '../assets/fire.png';
+import playerDisappear from '../assets/player-disappear.png';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -33,6 +34,10 @@ export default class Scene extends Phaser.Scene {
       frameHeight: 32,
     });
     this.load.image('background', background);
+    this.load.spritesheet('player-disappear', playerDisappear, {
+      frameHeight: 96,
+      frameWidth: 96,
+    })
   }
 
   create() {
@@ -129,6 +134,16 @@ export default class Scene extends Phaser.Scene {
       frames: this.anims.generateFrameNumbers('fire', {
         start: 0,
         end: 2,
+      }),
+      frameRate: 32,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: 'player-disappear',
+      frames: this.anims.generateFrameNumbers('player-disappear', {
+        start: 0,
+        end: 6,
       }),
       frameRate: 32,
       repeat: -1,
@@ -239,7 +254,7 @@ export default class Scene extends Phaser.Scene {
 
   jump() {
     // eslint-disable-next-line max-len
-    if (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < options.jumps)) {
+    if ((!this.dying) && (this.player.body.touching.down|| (this.playerJumps > 0 && this.playerJumps < options.jumps))) {
       if (this.player.body.touching.down) {
         this.playerJumps = 0;
       }
@@ -252,7 +267,7 @@ export default class Scene extends Phaser.Scene {
 
   update() {
     // game over
-    if (this.player.y > this.sys.game.config.height || this.dying) {
+    if (this.player.y > this.sys.game.config.height) {
       this.scene.start('Scene');
     }
     this.player.x = options.playerStartPosition;

@@ -34,7 +34,7 @@ const options = {
   applePercent: 30,
 
   // % of probability a fire appears on the platform
-  firePercent: 25,
+  firePercent: 100,
 };
 
 export default options;
