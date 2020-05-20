@@ -280,6 +280,14 @@ export default class Scene extends Phaser.Scene {
       }
     }, this);
 
+    this.fireGroup.getChildren().forEach(function(fire){
+      if(fire.x < - fire.displayWidth / 2){
+          this.fireGroup.killAndHide(fire);
+          this.fireGroup.remove(fire);
+      }
+  }, this);
+
+
     // adding new platforms
     if (minDistance > this.nextPlatformDistance) {
       const nextPlatformWidth = Phaser.Math.Between(options.platformSizeRange[0], options.platformSizeRange[1]);
