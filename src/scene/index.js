@@ -95,20 +95,16 @@ export default class Scene extends Phaser.Scene {
       },
     });
 
-    // group with all active firecamps.
     this.fireGroup = this.add.group({
-      // once a firecamp is removed, it's added to the pool
       removeCallback(fire) {
-        this.points += 1
+        this.points += 1;
 
         fire.scene.firePool.add(fire);
       },
     });
 
-    // fire pool
     this.firePool = this.add.group({
 
-      // once a fire is removed from the pool, it's added to the active fire group
       removeCallback(fire) {
         fire.scene.fireGroup.add(fire);
       },
@@ -179,8 +175,7 @@ export default class Scene extends Phaser.Scene {
     }, null, this);
 
     this.physics.add.overlap(this.player, this.appleGroup, (player, apple) => {
-     
-      this.points += 1
+      this.points += 1;
       apple.disableBody(false, false);
       this.suckEffect.play();
       apple.anims.play('disappear');
@@ -221,13 +216,13 @@ export default class Scene extends Phaser.Scene {
       platform.active = true;
       platform.visible = true;
       this.platformPool.remove(platform);
-      const newRatio = platformWidth / platform.displayWidth;
       platform.displayWidth = platformWidth;
       platform.tileScaleX = 1 / platform.scaleX;
     } else {
       platform = this.add.tileSprite(posX, posY, platformWidth, 24, 'block');
       this.physics.add.existing(platform);
       platform.body.setImmovable(true);
+      // eslint-disable-next-line max-len
       platform.body.setVelocityX(Phaser.Math.Between(options.platformSpeedRange[0], options.platformSpeedRange[1]) * -1);
       this.platformGroup.add(platform);
     }
@@ -276,7 +271,6 @@ export default class Scene extends Phaser.Scene {
   }
 
   jump() {
-    // eslint-disable-next-line max-len
     if ((!this.dying) && (this.player.body.touching.down || (this.playerJumps > 0 && this.playerJumps < options.jumps))) {
       this.jumpEffect.play();
       if (this.player.body.touching.down) {
@@ -290,8 +284,7 @@ export default class Scene extends Phaser.Scene {
   }
 
   update() {
-    this.score.text = 'Your Apples: ' + this.points;
-    // game over
+    this.score.text = `Your Apples: ${this.points}`;
     if (this.player.y > this.sys.game.config.height) {
       this.music.stop();
       this.scene.start('Scene');
@@ -299,7 +292,6 @@ export default class Scene extends Phaser.Scene {
     }
     this.player.x = options.playerStartPosition;
 
-    // recycling platforms
     let minDistance = this.sys.game.config.width;
     let rightmostPlatformHeight = 0;
     this.platformGroup.getChildren().forEach((platform) => {
@@ -314,7 +306,6 @@ export default class Scene extends Phaser.Scene {
       }
     }, this);
 
-    // recycling apples
     this.appleGroup.getChildren().forEach(apple => {
       if (apple.x < -apple.displayWidth / 2) {
         this.appleGroup.killAndHide(apple);
@@ -322,7 +313,7 @@ export default class Scene extends Phaser.Scene {
       }
     }, this);
 
-    this.fireGroup.getChildren().forEach(function (fire) {
+    this.fireGroup.getChildren().forEach((fire) => {
       if (fire.x < -fire.displayWidth / 2) {
         this.fireGroup.killAndHide(fire);
         this.fireGroup.remove(fire);
@@ -330,14 +321,17 @@ export default class Scene extends Phaser.Scene {
     }, this);
 
 
-    // adding new platforms
     if (minDistance > this.nextPlatformDistance) {
+      // eslint-disable-next-line max-len
       const nextPlatformWidth = Phaser.Math.Between(options.platformSizeRange[0], options.platformSizeRange[1]);
+      // eslint-disable-next-line max-len
       const platformRandomHeight = options.platformHeighScale * Phaser.Math.Between(options.platformHeightRange[0], options.platformHeightRange[1]);
       const nextPlatformGap = rightmostPlatformHeight + platformRandomHeight;
       const minPlatformHeight = this.sys.game.config.height * options.platformVerticalLimit[0];
       const maxPlatformHeight = this.sys.game.config.height * options.platformVerticalLimit[1];
+      // eslint-disable-next-line max-len
       const nextPlatformHeight = Phaser.Math.Clamp(nextPlatformGap, minPlatformHeight, maxPlatformHeight);
+      // eslint-disable-next-line max-len
       this.addPlatform(nextPlatformWidth, this.sys.game.config.width + nextPlatformWidth / 2, nextPlatformHeight);
     }
   }
