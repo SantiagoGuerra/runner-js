@@ -5,83 +5,107 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Runner.js</title>
   <link href="https://fonts.googleapis.com/css2?family=VT323&display=swap" rel="stylesheet">
+  <style>
+    *::before,
+    *::after,
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'VT323', monospace;
+    }
+  
+    body {
+      background-color: #BCCBD5;
+    }
+  
+    .game-container {
+      display: flex;
+      justify-content: center;
+    }
+  
+    canvas {
+      position: relative;
+    }
+  
+    .scoreboard {
+      position: fixed;
+      width: 100%;
+      height: 100%;
+      background-color: #AABACE;
+      margin: auto;
+      z-index: 9999;
+      padding-left: 68px;
+      padding-right: 68px;
+      transition: transform .5s ease-in-out;
+    }
+  
+    .scoreboard-title {
+      color: #fff;
+      margin-top: 32px;
+      font-size: 48px;
+      text-align: center;
+    }
+  
+    .scoreboard-list {
+      display: flex;
+      height: 100%;
+      margin-top: 48px;
+      list-style: none;
+      flex-direction: column;
+      max-width: 240px;
+      flex-wrap: wrap;
+    }
+  
+    .scoreboard-list-item {
+      height: 60px;
+      font-size: 24px;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+  
+    .close {
+      transform: translateY(200%);
+    }
+  
+    .open-scoreboard {
+      background: #AABACE;
+      display: inline-block;
+      padding-left: 32px;
+      padding-right: 32px;
+      position: absolute;
+      bottom: 0;
+      left: 0;
+    }
+
+    .player-name {
+      background: #AABACE;
+      display: flex;
+      height: 48px;
+     
+      position: absolute;
+      bottom: 0;
+      width: 450px;
+      right: 0;
+    }
+    .player-info {
+      width: 100%;
+      display: block;
+      font-size: 48px;
+      border: none;
+      background-color: #AABACE;
+      color: #fff;
+      padding-left: 32px;
+    }
+
+    .player-info:focus {
+      outline: none;
+    }
+  
+  </style>
 </head>
-<style>
-  *::before,
-  *::after,
-  * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'VT323', monospace;
-  }
-
-  body {
-    background-color: #BCCBD5;
-  }
-
-  .game-container {
-    display: flex;
-    justify-content: center;
-  }
-
-  canvas {
-    position: relative;
-  }
-
-  .scoreboard {
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    background-color: #AABACE;
-    margin: auto;
-    z-index: 9999;
-    padding-left: 68px;
-    padding-right: 68px;
-    transition: transform .5s ease-in-out;
-  }
-
-  .scoreboard-title {
-    color: #fff;
-    margin-top: 32px;
-    font-size: 48px;
-    text-align: center;
-  }
-
-  .scoreboard-list {
-    display: flex;
-    height: 100%;
-    margin-top: 48px;
-    list-style: none;
-    flex-direction: column;
-    max-width: 240px;
-    flex-wrap: wrap;
-  }
-
-  .scoreboard-list-item {
-    height: 60px;
-    font-size: 24px;
-    color: #fff;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-  }
-
-  .close {
-    transform: translateY(200%);
-  }
-
-  .open-scoreboard {
-    background: #AABACE;
-    display: inline-block;
-    padding-left: 32px;
-    padding-right: 32px;
-    position: absolute;
-    bottom: 0;
-    left: 0;
-  }
-
-</style>
 <body>
   <main id="root" class="game-container">
     <div class="scoreboard">
@@ -113,7 +137,13 @@
   <div class="open-scoreboard scoreboard-title">
     Scoreboard
   </div>
+
+  <div class="player-name scoreboard-title">
+    <input type="text" class="player-info" placeholder="Write your name:" id="playerName">
+  </div>
+  
   
   pnsGnjvnCzLyLxnwkdkP
 </body>
 </html>
+
