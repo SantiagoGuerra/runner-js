@@ -2,15 +2,15 @@ import axios from 'axios';
 
 const getScores = axios.get('https://us-central1-js-capstone-backend.cloudfunctions.net/api/games/pnsGnjvnCzLyLxnwkdkP/scores/');
 
-const scoreboardList = document.querySelector('.scoreboard-list')
+const scoreboardList = document.querySelector('.scoreboard-list');
 
 const elementFromString = string => {
-  const element = document.createElement('div')
+  const element = document.createElement('div');
 
   element.innerHTML = string;
 
-  return element.firstChild
-}
+  return element.firstChild;
+};
 
 const insertScore = data => {
   const list = `<li class="scoreboard-list-item">
@@ -22,10 +22,20 @@ const insertScore = data => {
   </span>
 </li>`;
 
-  scoreboardList.appendChild(elementFromString(list))
+  scoreboardList.appendChild(elementFromString(list));
+};
+
+
+function compareScore(a, b) {
+  if (a.score > b.score) {
+    return -1;
+  }
+  if (a.score < b.score) {
+    return 1;
+  }
+  return 0;
 }
 
-
 getScores.then(result => {
-    result.data.result.map(data => insertScore(data))
-})
+  result.data.result.sort(compareScore).map(data => insertScore(data));
+});

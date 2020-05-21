@@ -13,6 +13,7 @@ import fire from '../assets/fire.png';
 import playerDisappear from '../assets/player-disappear.png';
 import nokiaFont from '../assets/nokia.png';
 import nokiaFontXML from '../assets/nokia.xml';
+import postData from '../utils/postData';
 
 export default class Scene extends Phaser.Scene {
   constructor() {
@@ -288,6 +289,12 @@ export default class Scene extends Phaser.Scene {
     const playerName = document.querySelector('#playerName').value || 'Unknown';
     this.score.text = `${playerName}'s Apples: ${this.points}`;
     if (this.player.y > this.sys.game.config.height) {
+      if (this.points > 1) {
+        postData({
+          user: playerName,
+          score: this.points,
+        });
+      }
       this.music.stop();
       this.scene.start('Scene');
       this.points = 0;
