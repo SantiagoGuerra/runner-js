@@ -285,7 +285,8 @@ export default class Scene extends Phaser.Scene {
   }
 
   update() {
-    this.score.text = `Your Apples: ${this.points}`;
+    let playerName = document.querySelector('#playerName').value || 'Unknown';
+    this.score.text = `${playerName}'s Apples: ${this.points}`;
     if (this.player.y > this.sys.game.config.height) {
       this.music.stop();
       this.scene.start('Scene');

@@ -11,6 +11,7 @@ const options = {
   jumps: 2,
   applePercent: 110,
   firePercent: 30,
+  playerName: document.querySelector('#playerName').value || 'Unknown',
 };
 
 export default options;
