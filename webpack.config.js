@@ -1,15 +1,7 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 
 module.exports = {
-  mode: 'development',
-  entry: path.join(__dirname, 'game', 'index'),
-  watch: true,
-  output: {
-    path: path.join(__dirname, 'dist'),
-    publicPath: '/dist/',
-    filename: 'bundle.js',
-    chunkFilename: '[name].js',
-  },
   module: {
     rules: [{
       test: /.jsx?$/,
@@ -29,10 +21,23 @@ module.exports = {
           }],
         ],
       },
+    },
+    {
+      test: /\.(png|jpe?g|gif|wav|xml)$/i,
+      use: [
+        {
+          loader: 'file-loader',
+        },
+      ],
     }],
   },
   resolve: {
     extensions: ['.json', '.js', '.jsx'],
   },
   devtool: 'source-map',
+  plugins: [
+    new HtmlWebpackPlugin({
+      template: 'src/index.html',
+    }),
+  ],
 };
